@@ -1,0 +1,7 @@
+Test-Command: pytest-3 tests/
+Depends:
+ python3-mock,
+ python3-pytest,
+ python3-pytest-timeout,
+ @,
+Restrictions: allow-stderr

@@ -1,0 +1,54 @@
+From: Marc Deslauriers <marc.deslauriers@canonical.com>
+Date: Wed, 5 Sep 2018 14:02:17 +0800
+Subject: Use system ca certificates, not the bundled ones
+
+Forwarded: not-needed
+Bug-Ubuntu: https://launchpad.net/bugs/882027
+---
+ python2/httplib2/__init__.py | 4 ++--
+ python3/httplib2/__init__.py | 4 ++--
+ setup.py                     | 1 -
+ 3 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/python2/httplib2/__init__.py b/python2/httplib2/__init__.py
+index f35ba48..2ad0571 100644
+--- a/python2/httplib2/__init__.py
++++ b/python2/httplib2/__init__.py
+@@ -276,8 +276,8 @@ class NotRunningAppEngineEnvironment(HttpLib2Error):
+ # requesting that URI again.
+ DEFAULT_MAX_REDIRECTS = 5
+ 
+-from httplib2 import certs
+-CA_CERTS = certs.where()
++# Use system CA certificates
++CA_CERTS = "/etc/ssl/certs/ca-certificates.crt"
+ 
+ # Which headers are hop-by-hop headers by default
+ HOP_BY_HOP = [
+diff --git a/python3/httplib2/__init__.py b/python3/httplib2/__init__.py
+index cf2db60..538f220 100644
+--- a/python3/httplib2/__init__.py
++++ b/python3/httplib2/__init__.py
+@@ -168,8 +168,8 @@ SAFE_METHODS = ("GET", "HEAD", "OPTIONS", "TRACE")
+ REDIRECT_CODES = frozenset((300, 301, 302, 303, 307, 308))
+ 
+ 
+-from httplib2 import certs
+-CA_CERTS = certs.where()
++# Use system CA certificates
++CA_CERTS = "/etc/ssl/certs/ca-certificates.crt"
+ 
+ # PROTOCOL_TLS is python 3.5.3+. PROTOCOL_SSLv23 is deprecated.
+ # Both PROTOCOL_TLS and PROTOCOL_SSLv23 are equivalent and means:
+diff --git a/setup.py b/setup.py
+index b66d24e..4b39647 100755
+--- a/setup.py
++++ b/setup.py
+@@ -84,7 +84,6 @@ A comprehensive HTTP client library, ``httplib2`` supports many features left ou
+ """,
+     package_dir=pkgdir,
+     packages=["httplib2"],
+-    package_data={"httplib2": ["*.txt"]},
+     tests_require=read_requirements("requirements-test.txt"),
+     cmdclass={"test": TestCommand},
+     classifiers=[
