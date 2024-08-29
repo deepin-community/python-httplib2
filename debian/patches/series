@@ -1,4 +1,3 @@
 0001-Use-system-ca-certificates-not-the-bundled-ones.patch
-skip-ca-md-too-weak-ssl-tests.patch
 skip-broken-autopkgtests.patch
 disable-pytest-cov.patch

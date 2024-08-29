@@ -6,15 +6,15 @@ Skip 5 tests, which do not run properly in an isolated autopkgtest
 environment
 ---
  tests/test_http.py  | 1 +
- tests/test_other.py | 5 +----
- tests/test_proxy.py | 2 ++
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ tests/test_other.py | 2 +-
+ tests/test_proxy.py | 3 +++
+ 3 files changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/tests/test_http.py b/tests/test_http.py
-index f61992c..a2ec1bf 100644
+index 77e7a01..42e2544 100644
 --- a/tests/test_http.py
 +++ b/tests/test_http.py
-@@ -41,6 +41,7 @@ def test_bad_status_line_retry():
+@@ -42,6 +42,7 @@ def test_bad_status_line_retry():
      httplib2.RETRIES = old_retries
  
  
@@ -23,35 +23,44 @@ index f61992c..a2ec1bf 100644
      http = httplib2.Http()
      http.force_exception_to_status_code = False
 diff --git a/tests/test_other.py b/tests/test_other.py
-index 0f450ab..2a6ff59 100644
+index 371e98d..1c2ed09 100644
 --- a/tests/test_other.py
 +++ b/tests/test_other.py
-@@ -191,11 +191,8 @@ def test_get_end2end_headers():
+@@ -193,12 +193,12 @@ def test_get_end2end_headers():
+     end2end = httplib2._get_end2end_headers(response)
      assert len(end2end) == 0
  
- 
--@pytest.mark.xfail(
--    os.environ.get("TRAVIS_PYTHON_VERSION") in ("2.7", "pypy"),
--    reason="FIXME: fail on Travis py27 and pypy, works elsewhere",
--)
+-
+ # @pytest.mark.xfail(
+ #     os.environ.get("TRAVIS_PYTHON_VERSION") in ("2.7", "pypy"),
+ #     reason="FIXME: fail on Travis py27 and pypy, works elsewhere",
+ # )
  @pytest.mark.parametrize("scheme", ("http", "https"))
 +@pytest.mark.skip(reason="Does not run in isolated autopkgtest environment")
  def test_ipv6(scheme):
      # Even if IPv6 isn't installed on a machine it should just raise socket.error
      uri = "{scheme}://[::1]:1/".format(scheme=scheme)
 diff --git a/tests/test_proxy.py b/tests/test_proxy.py
-index 6f7494d..86618e6 100644
+index 9ddb02b..9dda995 100644
 --- a/tests/test_proxy.py
 +++ b/tests/test_proxy.py
-@@ -36,6 +36,7 @@ def test_from_url_ident():
-     assert pi.proxy_pass == "fish"
+@@ -15,6 +15,7 @@ try:
+ except ImportError:
+     import mock
+ import os
++import pytest
+ import socket
+ import tests
+ from six.moves import urllib
+@@ -54,6 +55,7 @@ def test_from_url_ipv6():
+     assert pi.proxy_user is None
  
  
 +@pytest.mark.skip(reason="Does not run in isolated autopkgtest environment")
  def test_from_env(monkeypatch):
      assert os.environ.get("http_proxy") is None
      monkeypatch.setenv("http_proxy", "http://myproxy.example.com:8080")
-@@ -44,6 +45,7 @@ def test_from_env(monkeypatch):
+@@ -62,6 +64,7 @@ def test_from_env(monkeypatch):
      assert pi.proxy_port == 8080
  
  
